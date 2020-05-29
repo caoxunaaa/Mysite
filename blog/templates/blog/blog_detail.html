@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block title %}
+{{ blog.title }}
+{% endblock %}
+
+{% load static %}
+{% block header_extends %}
+    <link rel="stylesheet" href="{% static 'blog/blog.css' %}">
+{% endblock %}
+
+{% block content %}
+    <p>标题：{{ blog.title }}</p>
+    <p>分类: <a href="{% url 'blog_type' blog.blog_type.pk %}">{{ blog.blog_type }}</a></p>
+    <p>更新时间: {{ blog.updated_time|date:"Y-m-d H:m:s" }}</p>
+    <p class="blog-content">{{ blog.content }}</p>
+{% endblock %}

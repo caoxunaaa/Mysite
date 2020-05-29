@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}
+    博客列表
+{% endblock %}
+
+{% load static %}
+{% block header_extends %}
+    <link rel="stylesheet" href="{% static 'blog/blog.css' %}">
+{% endblock %}
+
+{% block content %}
+    {% for blog in blogs %}
+        <div class="blog-list">
+            <p class="title"><a href="{% url 'blog_detail' blog.pk %}">{{ blog }}</a></p>
+            <p>分类: <a href="{% url 'blog_type' blog.blog_type.pk %}">{{ blog.blog_type }}</a></p>
+            <p>更新时间: {{ blog.updated_time|date:"Y-m-d H:m:s" }}</p>
+            <p>{{ blog.content|truncatechars:30 }}</p>
+            <hr>
+        </div>
+    {% endfor %}
+{% endblock %}
