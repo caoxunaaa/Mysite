@@ -1,6 +1,5 @@
 from django.db import models
 from django.contrib.auth.admin import User
-from django.utils import timezone
 
 
 class BlogType(models.Model):

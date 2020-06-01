@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% block header_extends %}
+    <link rel="stylesheet" href="{% static 'blog/blog.css' %}">
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-7 col-md-offset-1 col-sm-8  col-xs-12">
+                {% block left_contents %}{% endblock %}
+            </div>
+            <div class="col-md-2 col-md-offset-2 col-sm-2 col-sm-offset-2 hidden-xs">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">按分类</h3>
+                    </div>
+                    <div class="panel-body">
+                        {% for type in types %}
+                            <div><a href="{% url 'blog_with_type' type.pk %}">{{ type }}</a></div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="panel panel-success">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">按日期</h3>
+                    </div>
+                    <div class="panel-body">
+                        {% for date in dates %}
+                            <div><a href="{% url 'blog_with_date' date.year date.month %}">{{ date|date:"Y-m" }}</a></div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

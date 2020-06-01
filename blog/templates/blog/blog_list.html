@@ -1,6 +1,4 @@
-{% extends 'base.html' %}
-
-{% load static %}
+{% extends 'blog/blog_base.html' %}
 
 {% block title %}
     博客列表
@@ -11,32 +9,52 @@
     <link rel="stylesheet" href="{% static 'blog/blog.css' %}">
 {% endblock %}
 
-{% block content %}
-    <div class="container">
-        <div class="row">
-            <div class="col-md-7 col-md-offset-1 col-sm-8 col-xs-12">
+{% block left_contents %}
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h3 class="panel-title">目录</h3>
+        </div>
+        <div class="panel-body">
+            <div class="blog">
                 {% for blog in blogs %}
-                    <div class="blog-list">
-                        <p class="title"><a href="{% url 'blog_detail' blog.pk %}">{{ blog }}</a></p>
-                        <p>分类: <a href="{% url 'blog_with_type' blog.blog_type.pk %}">{{ blog.blog_type }}</a></p>
-                        <p>更新时间: {{ blog.updated_time|date:"Y-m-d H:m:s" }}</p>
-                        <p>{{ blog.content|truncatechars:30 }}</p>
-                        <hr>
-                    </div>
+                    <p class="title"><a href="{% url 'blog_detail' blog.pk %}">{{ blog }}</a></p>
+                    <p>分类: <a href="{% url 'blog_with_type' blog.blog_type.pk %}">{{ blog.blog_type }}</a></p>
+                    <p>更新时间: {{ blog.updated_time|date:"Y-m-d H:m:s" }}</p>
+                    <div class="blog-list-content">{{ blog.content|truncatechars:30 }}</div>
                 {% endfor %}
-            </div>
-            <div class="col-md-2 col-md-offset-2 col-sm-2 col-sm-offset-2 hidden-xs">
-                <div class="panel panel-primary">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">分类</h3>
-                    </div>
-                    <div class="panel-body">
-                        {% for type in types %}
-                            <div><a href="{% url 'blog_with_type' type.pk %}">{{ type }}</a></div>
-                        {% endfor %}
-                    </div>
-                </div>
             </div>
         </div>
     </div>
+    <nav aria-label="Page navigation">
+        <ul class="pagination">
+            {% if blogs.number == 1 %}
+            {% else %}
+                <li>
+                    <a href="?page={{ blogs.previous_page_number }}" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+            {% endif %}
+
+            {% for page_num in blogs.paginator.page_range %}
+                {% if page_num == blogs.number %}
+                    <li class="active"><span>{{ page_num }}</span></li>
+                {% else %}
+                    <li><a href="?page={{ page_num }}">{{ page_num }}</a></li>
+                {% endif %}
+            {% endfor %}
+
+            {% if blogs.number == blogs.paginator.num_pages %}
+            {% else %}
+                <li>
+                    <a href="?page={{ blogs.next_page_number }}" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+
 {% endblock %}
+
+
