@@ -18,7 +18,7 @@
                     </div>
                     <div class="panel-body">
                         {% for type in types %}
-                            <div><a href="{% url 'blog_with_type' type.pk %}">{{ type }}</a></div>
+                            <div><a href="{% url 'blog_with_type' type.pk %}">{{ type }}({{ type.blog_count }})</a></div>
                         {% endfor %}
                     </div>
                 </div>
@@ -27,8 +27,9 @@
                         <h3 class="panel-title">按日期</h3>
                     </div>
                     <div class="panel-body">
-                        {% for date in dates %}
-                            <div><a href="{% url 'blog_with_date' date.year date.month %}">{{ date|date:"Y-m" }}</a></div>
+                        {% for date, blog_date_count in dates.items %}
+                            <div><a href="{% url 'blog_with_date' date.year date.month %}">{{ date|date:"Y-m" }}({{ blog_date_count }})</a>
+                            </div>
                         {% endfor %}
                     </div>
                 </div>
