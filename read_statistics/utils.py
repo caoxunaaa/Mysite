@@ -32,26 +32,26 @@ def read_once_statistics(request, obj):
     return key
 
 
-def weeks_read_statistics(contenttype):
+def weeks_read_statistics(content_type):
     today = timezone.now().date()
     weeks_read_number = dict()
     for i in reversed(range(7)):
         date = today - datetime.timedelta(days=i)
-        result = ReadStatisticsDetail.objects.filter(content_type=contenttype, date=date).aggregate(
+        result = ReadStatisticsDetail.objects.filter(content_type=content_type, date=date).aggregate(
             blog_read_num=Sum('read_num'))
         weeks_read_number[date.strftime('%m/%d')] = result['blog_read_num'] or 0
     return weeks_read_number
 
 
-def today_hot_read(contenttype):
+def today_hot_read(content_type):
     today = timezone.now().date()
-    return ReadStatisticsDetail.objects.filter(content_type=contenttype, date=today).order_by('-read_num')[:3]
+    return ReadStatisticsDetail.objects.filter(content_type=content_type, date=today).order_by('-read_num')[:3]
 
 
-def yesterday_hot_read(contenttype):
+def yesterday_hot_read(content_type):
     today = timezone.now().date()
     yesterday = today - datetime.timedelta(days=1)
-    return ReadStatisticsDetail.objects.filter(content_type=contenttype, date=yesterday).order_by('-read_num')[:3]
+    return ReadStatisticsDetail.objects.filter(content_type=content_type, date=yesterday).order_by('-read_num')[:3]
 
 
 
