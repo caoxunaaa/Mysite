@@ -3,8 +3,7 @@ from .models import Blog, BlogType
 from django.core.paginator import Paginator
 from mysite import settings
 from django.db.models import Count
-from django.contrib.contenttypes.models import ContentType
-from read_statistics.models import ReadStatistics
+from read_statistics.utils import read_once_statistics
 
 
 def get_common_data(request, obj_list):
@@ -48,16 +47,12 @@ def blog_with_date(request, year, month):
 def blog_detail(request, blog_pk):
     current_blog = Blog.objects.get(pk=blog_pk, is_delete=False)
     all_blogs = Blog.objects.filter(is_delete=False)
-
-    ct = ContentType.objects.filter(model='blog').first()
-    # todo 添加Cookie防止阅读量错误
-    key = '{}_{}_read'.format(ct.model, blog_pk)
-    readstatistics, created = ReadStatistics.objects.get_or_create(content_type=ct, object_id=blog_pk)
-    readstatistics.read_num += 1
-    readstatistics.save()
+    key = read_once_statistics(request, obj=current_blog)
 
     context = get_common_data(request, all_blogs)
     context['blog'] = current_blog
     context['pervious_blog'] = Blog.objects.filter(created_time__lt=current_blog.created_time).last()
     context['next_blog'] = Blog.objects.filter(created_time__gt=current_blog.created_time).first()
-    return render(request, 'blog/blog_detail.html', context)
+    response = render(request, 'blog/blog_detail.html', context)
+    response.set_cookie(key=key, value='True')
+    return response

@@ -25,6 +25,9 @@ class Blog(models.Model):
     def __str__(self):
         return self.title
 
+    class Meta:
+        ordering = ['pk']
+
     def read_num(self):
         ct = ContentType.objects.get_for_model(self)
         try:

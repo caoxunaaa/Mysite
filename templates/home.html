@@ -5,6 +5,41 @@
 {% load static %}
 {% block header_extends %}
     <link rel="stylesheet" href="{% static 'home.css' %}">
+    <script src="http://cdn.highcharts.com.cn/highcharts/highcharts.js"></script>
 {% endblock %}
 
-{% block content %}<h3 class="home-content">欢迎来到个人博客网站</h3>{% endblock %}
+
+{% block content %}
+    <h3 class="home-content">欢迎来到个人博客网站</h3>
+    <div id="container" style="width: 480px;height:320px;"></div>
+    <script>
+        // 图表配置
+        var options = {
+            chart: {
+                type: 'line'                          //指定图表的类型，默认是折线图（line）
+            },
+            title: {
+                text: '前七天阅读量统计'                 // 标题
+            },
+            xAxis: {
+                categories: {{ readnum_week_date|safe }}   // x 轴分类
+            },
+            yAxis: {
+                title: {
+                    text: '阅读量'                // y 轴标题
+                }
+            },
+            series: [{                              // 数据列
+                name: '日期',                        // 数据列名
+                data: {{ readnum_week_num }}                    // 数据
+            }],
+            legend: { enabled: false},
+            credits: { enabled: false },
+        };
+        // 图表初始化函数
+        var chart = Highcharts.chart('container', options);
+    </script>
+{% endblock %}
+
+
+
