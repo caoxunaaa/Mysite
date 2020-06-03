@@ -10,6 +10,6 @@ class Comment(models.Model):
     context = RichTextField(verbose_name='评论内容')
     commented_time = models.DateTimeField(verbose_name='评论时间', auto_now_add=True)
 
-    contenttype = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
-    content_object = GenericForeignKey('contenttype', 'object_id')
+    content_object = GenericForeignKey('content_type', 'object_id')
