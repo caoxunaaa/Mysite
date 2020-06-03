@@ -1,9 +1,9 @@
 from django.db import models
-from django.db.models.fields import exceptions
 from django.contrib.auth.admin import User
 from ckeditor_uploader.fields import RichTextUploadingField
-from django.contrib.contenttypes.models import ContentType
-from read_statistics.models import ReadStatistics
+from read_statistics.utils import ReadNumDisplay
+from read_statistics.models import ReadStatisticsDetail
+from django.contrib.contenttypes.fields import GenericRelation
 
 
 class BlogType(models.Model):
@@ -13,11 +13,12 @@ class BlogType(models.Model):
         return self.type_name
 
 
-class Blog(models.Model):
+class Blog(models.Model, ReadNumDisplay):
     title = models.CharField('标题', max_length=30)
     auth = models.ForeignKey(User, verbose_name='作者', on_delete=models.CASCADE)
     blog_type = models.ForeignKey(BlogType, verbose_name='分类', on_delete=models.CASCADE)
     content = RichTextUploadingField('正文')
+    read_stistics_detail = GenericRelation(ReadStatisticsDetail)
     created_time = models.DateTimeField('创建时间', auto_now_add=True)
     updated_time = models.DateTimeField('更新时间', auto_now=True)
     is_delete = models.BooleanField(default=False)
@@ -27,10 +28,3 @@ class Blog(models.Model):
 
     class Meta:
         ordering = ['pk']
-
-    def read_num(self):
-        ct = ContentType.objects.get_for_model(self)
-        try:
-            return ReadStatistics.objects.get(content_type=ct, object_id=self.pk).read_num
-        except exceptions.ObjectDoesNotExist:
-            return 0

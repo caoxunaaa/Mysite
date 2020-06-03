@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from .models import Blog, BlogType
 from django.core.paginator import Paginator
 from mysite import settings
@@ -45,8 +45,9 @@ def blog_with_date(request, year, month):
 
 
 def blog_detail(request, blog_pk):
-    current_blog = Blog.objects.get(pk=blog_pk, is_delete=False)
+    current_blog = Blog.objects.get_object_or_404(pk=blog_pk, is_delete=False)
     all_blogs = Blog.objects.filter(is_delete=False)
+
     key = read_once_statistics(request, obj=current_blog)
 
     context = get_common_data(request, all_blogs)

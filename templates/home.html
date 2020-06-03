@@ -33,12 +33,39 @@
                 name: '日期',                        // 数据列名
                 data: {{ readnum_week_num }}                    // 数据
             }],
-            legend: { enabled: false},
-            credits: { enabled: false },
+            legend: {enabled: false},
+            credits: {enabled: false},
         };
         // 图表初始化函数
         var chart = Highcharts.chart('container', options);
     </script>
+    <div class="hot-blogs">
+        <h3>今天热门博客</h3>
+        <ul>
+            {% for blog in today_hot_blogs %}
+                <li><a href="{% url 'blog_detail' blog.content_object.pk %}">{{ blog.content_object.title }}</a></li>
+            {% empty %}
+                <li>今天还没有热门博客</li>
+            {% endfor %}
+        </ul>
+        <h3>昨天热门博客</h3>
+        <ul>
+            {% for blog in yesterday_hot_blogs %}
+                <li><a href="{% url 'blog_detail' blog.content_object.pk %}">{{ blog.content_object.title }}</a></li>
+            {% empty %}
+                <li>昨天没有热门博客</li>
+            {% endfor %}
+        </ul>
+        <h3>一周热榜</h3>
+        <ul>
+            {% for blog in last_week_hot_blogs %}
+                <li><a href="{% url 'blog_detail' blog.id %}">{{ blog.title }}</a></li>
+            {% empty %}
+                <li>上周没有热门博客</li>
+            {% endfor %}
+        </ul>
+    </div>
+
 {% endblock %}
 
 

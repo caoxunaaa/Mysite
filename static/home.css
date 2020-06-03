@@ -8,3 +8,8 @@ h3.home-content {
 div#container {
     margin: 0 auto;
 }
+
+div.hot-blogs {
+    text-align: center;
+    margin-top: 2em;
+}
