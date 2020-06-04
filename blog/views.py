@@ -45,7 +45,7 @@ def blog_with_date(request, year, month):
 
 
 def blog_detail(request, blog_pk):
-    current_blog = Blog.objects.get_object_or_404(pk=blog_pk, is_delete=False)
+    current_blog = get_object_or_404(Blog, pk=blog_pk, is_delete=False)
     all_blogs = Blog.objects.filter(is_delete=False)
 
     key = read_once_statistics(request, obj=current_blog)
