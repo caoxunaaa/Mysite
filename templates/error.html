@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block title %}个人博客|首页{% endblock %}
+
+{% block content %}
+    {% if messages %}
+    <script>
+        {% for msg in messages %}
+            alert('{{ msg.message }}');
+        {% endfor %}
+    </script>
+    {% endif %}
+{% endblock %}

@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from read_statistics.utils import weeks_read_statistics, yesterday_hot_read, today_hot_read
 from blog.models import Blog
 from django.contrib.contenttypes.models import ContentType
@@ -6,6 +6,9 @@ from django.utils import timezone
 import datetime
 from django.db.models import Sum
 from django.core.cache import cache
+from django.contrib import auth, messages
+from .forms import LoginForm
+from django.urls import reverse
 
 
 def last_week_hot_read(contenttype):
@@ -37,3 +40,23 @@ def index(request):
     context['yesterday_hot_blogs'] = yesterday_hot_read(ct)
     context['last_week_hot_blogs'] = last_week_hot_blogs
     return render(request, 'home.html', context)
+
+
+def login(request):
+    if request.method == 'POST':
+        login_form = LoginForm(request.POST)
+        if login_form.is_valid():
+            user = login_form.cleaned_data['user']
+            auth.login(request, user)
+            print(request.GET.get('from', reverse('home')))
+            return redirect(request.GET.get('from', reverse('home')))
+    else:
+        login_form = LoginForm()
+
+    context = dict()
+    context['login_form'] = login_form
+    return render(request, 'login.html', context)
+
+
+def register(request):
+    pass

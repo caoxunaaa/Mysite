@@ -4,6 +4,7 @@ from django.core.paginator import Paginator
 from mysite import settings
 from django.db.models import Count
 from read_statistics.utils import read_once_statistics
+from mysite.forms import LoginForm
 
 
 def get_common_data(request, obj_list):
@@ -49,8 +50,10 @@ def blog_detail(request, blog_pk):
     all_blogs = Blog.objects.filter(is_delete=False)
 
     key = read_once_statistics(request, obj=current_blog)
+    loginform = LoginForm()
 
     context = get_common_data(request, all_blogs)
+    context['loginform']= loginform
     context['blog'] = current_blog
     context['pervious_blog'] = Blog.objects.filter(created_time__lt=current_blog.created_time).last()
     context['next_blog'] = Blog.objects.filter(created_time__gt=current_blog.created_time).first()
