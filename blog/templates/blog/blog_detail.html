@@ -7,6 +7,8 @@
 {% load static %}
 {% block header_extends %}
     <link rel="stylesheet" href="{% static 'blog/blog.css' %}">
+    <script type="text/javascript" src="{% static "ckeditor/ckeditor-init.js" %}"></script>
+    <script type="text/javascript" src="{% static "ckeditor/ckeditor/ckeditor.js" %}"></script>
 {% endblock %}
 
 {% block left_contents %}
@@ -36,14 +38,11 @@
     </div>
     <div class="comment-area">
         {% if user.is_authenticated %}
+            <div>{{ user.username }}已登录，请评论.</div>
             <form action="{% url 'update_comment' %}" method="POST">
-            <div class="form-group">
-                <label for="comment_text">{{ user.username }}已登录，请评论.</label>
-                <textarea name="text" id="comment_text" class="form-control" rows="10"></textarea>
-            </div>
-                <input type="hidden" name="content_type" value="blog">
-                <input type="hidden" name="object_id" value="{{ blog.pk }}">
-                <input type="submit" value="提交" class="btn btn-primary pull-right" >
+                {% csrf_token %}
+                {{ comment_form }}
+                <input class="btn btn-primary" type="submit" value="提交">
             </form>
         {% else %}
             <div>用户还未登录，请登录后进行评论~
@@ -55,7 +54,9 @@
     </div>
     <hr>
     <div class="comment-list">
-        评论列表
+        {% for comment in comments %}
+            <p>{{ comment.user.username }}: {{ comment.context|safe }}</p>
+        {% endfor %}
     </div>
 {% endblock %}
 

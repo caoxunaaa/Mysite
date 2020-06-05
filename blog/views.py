@@ -4,7 +4,9 @@ from django.core.paginator import Paginator
 from mysite import settings
 from django.db.models import Count
 from read_statistics.utils import read_once_statistics
-from mysite.forms import LoginForm
+from django.contrib.contenttypes.models import ContentType
+from comment.forms import CommentForm
+from comment.models import Comment
 
 
 def get_common_data(request, obj_list):
@@ -48,15 +50,16 @@ def blog_with_date(request, year, month):
 def blog_detail(request, blog_pk):
     current_blog = get_object_or_404(Blog, pk=blog_pk, is_delete=False)
     all_blogs = Blog.objects.filter(is_delete=False)
-
     key = read_once_statistics(request, obj=current_blog)
-    loginform = LoginForm()
+    blog_ct = ContentType.objects.get_for_model(current_blog)
+    comments = Comment.objects.filter(content_type=blog_ct, object_id=blog_pk)
 
     context = get_common_data(request, all_blogs)
-    context['loginform']= loginform
     context['blog'] = current_blog
+    context['comments'] = comments
     context['pervious_blog'] = Blog.objects.filter(created_time__lt=current_blog.created_time).last()
     context['next_blog'] = Blog.objects.filter(created_time__gt=current_blog.created_time).first()
+    context['comment_form'] = CommentForm(initial={'content_type': blog_ct.model, 'object_id': blog_pk})
     response = render(request, 'blog/blog_detail.html', context)
     response.set_cookie(key=key, value='True')
     return response
