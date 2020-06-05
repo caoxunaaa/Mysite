@@ -27,8 +27,10 @@ div.blog-list-content:not(:last-child) {
 }
 
 div.comment-area {
-    height: 3em;
-    border: 1px solid black;
+    margin-top: 2em;
+}
+
+div.comment-list {
     margin-top: 2em;
 }
 

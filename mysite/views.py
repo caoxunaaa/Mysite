@@ -6,9 +6,10 @@ from django.utils import timezone
 import datetime
 from django.db.models import Sum
 from django.core.cache import cache
-from django.contrib import auth, messages
-from .forms import LoginForm
+from django.contrib import auth
+from .forms import LoginForm, RegisterForm
 from django.urls import reverse
+from django.contrib.auth.models import User
 
 
 def last_week_hot_read(contenttype):
@@ -48,7 +49,6 @@ def login(request):
         if login_form.is_valid():
             user = login_form.cleaned_data['user']
             auth.login(request, user)
-            print(request.GET.get('from', reverse('home')))
             return redirect(request.GET.get('from', reverse('home')))
     else:
         login_form = LoginForm()
@@ -59,4 +59,19 @@ def login(request):
 
 
 def register(request):
-    pass
+    if request.method == 'POST':
+        register_form = RegisterForm(request.POST)
+        if register_form.is_valid():
+            username = register_form.cleaned_data['username']
+            email = register_form.cleaned_data['email']
+            password = register_form.cleaned_data['password']
+            user = User.objects.create_user(username=username, email=email, password=password)
+            user.save()
+            user = auth.authenticate(username=username, password=password)
+            auth.login(request, user)
+            return redirect(request.GET.get('from', reverse('home')))
+    else:
+        register_form = RegisterForm()
+    context = dict()
+    context['register_form'] = register_form
+    return render(request, 'register.html', context)
