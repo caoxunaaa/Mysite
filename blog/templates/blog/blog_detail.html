@@ -21,7 +21,7 @@
         </div>
         <div class="panel-footer">
             分类: <a href="{% url 'blog_with_type' blog.blog_type.pk %}">{{ blog.blog_type }}</a>
-            更新时间: {{ blog.updated_time|date:"Y-m-d H:m:s" }}&nbsp;&nbsp;
+            更新时间: {{ blog.updated_time|date:"Y-m-d H:i:s" }}&nbsp;&nbsp;
             <div>
                 {% if pervious_blog.pk %}
                     <a href="{% url 'blog_detail' pervious_blog.pk %}">上一篇</a>
@@ -39,9 +39,12 @@
     <div class="comment-area">
         {% if user.is_authenticated %}
             <div>{{ user.username }}已登录，请评论.</div>
-            <form action="{% url 'update_comment' %}" method="POST">
+            <form id="comment_form" action="{% url 'update_comment' %}" method="POST">
                 {% csrf_token %}
-                {{ comment_form }}
+                {% for field in comment_form %}
+                    {{ field }}
+                {% endfor %}
+                <span id="comment_error" class="text-danger pull-left"></span>
                 <input class="btn btn-primary" type="submit" value="提交">
             </form>
         {% else %}
@@ -53,11 +56,30 @@
         {% endif %}
     </div>
     <hr>
-    <div class="comment-list">
+    <div id="comment_list" class="comment-list">
         {% for comment in comments %}
-            <p>{{ comment.user.username }}: {{ comment.context|safe }}</p>
+            <p>{{ comment.user.username }} ({{ comment.commented_time|date:"Y-m-d H:i:s"  }}): {{ comment.context|safe }}</p>
         {% endfor %}
     </div>
 {% endblock %}
 
-
+{% block script_extends %}
+    <script type="text/javascript">
+        $("#comment_form").submit(function(){
+            // 异步提交
+            $.ajax({
+                url: "{% url 'update_comment' %}",
+                type: 'POST',
+                data: $(this).serialize(),
+                cache: false,
+                success: function(data){
+                    console.log(data);
+                },
+                error: function(xhr){
+                    console.log(xhr);
+                }
+            });
+            return false;
+        });
+    </script>
+{% endblock %}
