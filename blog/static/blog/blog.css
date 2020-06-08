@@ -34,3 +34,6 @@ div.comment-list {
     margin-top: 2em;
 }
 
+span#cke_1_bottom {
+    display: none;
+}

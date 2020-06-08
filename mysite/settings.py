@@ -129,6 +129,12 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # ckeditor
 CKEDITOR_UPLOAD_PATH = 'upload/'
+CKEDITOR_CONFIGS = {
+    'comment_ckeditor': {
+        'width': 'auto',
+        'tabSpaces': 4,
+    }
+}
 
 # 自定义参数
 EACH_PAGE_BLOGS_NUMBER = 4

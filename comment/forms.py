@@ -7,7 +7,7 @@ from django.db.models import ObjectDoesNotExist
 class CommentForm(forms.Form):
     content_type = forms.CharField(widget=forms.HiddenInput)
     object_id = forms.IntegerField(widget=forms.HiddenInput)
-    text = forms.CharField(label='评论', widget=CKEditorWidget())
+    text = forms.CharField(label='评论', widget=CKEditorWidget(config_name='comment_ckeditor'))
 
     def __init__(self, *args, **kwargs):
         if 'user' in kwargs:
