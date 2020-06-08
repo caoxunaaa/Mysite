@@ -52,7 +52,7 @@ def blog_detail(request, blog_pk):
     all_blogs = Blog.objects.filter(is_delete=False)
     key = read_once_statistics(request, obj=current_blog)
     blog_ct = ContentType.objects.get_for_model(current_blog)
-    comments = Comment.objects.filter(content_type=blog_ct, object_id=blog_pk)
+    comments = Comment.objects.filter(content_type=blog_ct, object_id=blog_pk, parent=None)
 
     context = get_common_data(request, all_blogs)
     context['blog'] = current_blog

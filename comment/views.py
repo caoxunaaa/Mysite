@@ -14,6 +14,7 @@ def update_comment(request):
         comment.user = comment_form.cleaned_data['user']
         comment.content_object = comment_form.cleaned_data['content_object']
         comment.context = comment_form.cleaned_data['text']
+
         comment.save()
         # 返回数据
         data['status'] = 'SUCCESS'
