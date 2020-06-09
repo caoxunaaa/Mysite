@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'blog',
     'read_statistics',
     'comment',
+    'likes',
     'ckeditor',
     'ckeditor_uploader',
 ]

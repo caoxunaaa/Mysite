@@ -37,3 +37,19 @@ div.comment-list {
 span#cke_1_bottom {
     display: none;
 }
+
+div.comments {
+    padding-bottom: 1em;
+    margin-bottom: 1em;
+    border-bottom: 1px dashed #000000;
+}
+
+div.replies {
+    margin-bottom: 0.2em;
+    margin-left: 2em;
+}
+
+div.reply_display_content {
+    margin-left: 2em;
+}
+

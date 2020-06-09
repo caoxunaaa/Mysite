@@ -39,6 +39,11 @@
     <div class="comment-area">
         {% if user.is_authenticated %}
             <div>{{ user.username }}已登录，请评论.</div>
+            <div id="reply_display_content" style="display: none">
+                <p>回复：</p>
+                <div id="reply_display">
+                </div>
+            </div>
             <form id="comment_form" action="{% url 'update_comment' %}" method="POST">
                 {% csrf_token %}
                 {% for field in comment_form %}
@@ -58,10 +63,25 @@
     <hr>
     <div id="comment_list" class="comment-list">
         {% for comment in comments %}
-            <div>
+            <div class="comments" id="root_{{ comment.pk }}">
                 {{ comment.user.username }}({{ comment.commented_time|date:"Y-m-d H:i:s" }}):
-                {{ comment.context|safe }}&nbsp;&nbsp;
+                <div id="comment_{{ comment.pk }}">
+                    {{ comment.context|safe }}&nbsp;&nbsp;&nbsp;
+                    <a href="javascript: reply({{ comment.pk }});">回复</a>
+                </div>
+                {% for reply in comment.root_comment_reverse.all %}
+                    <div class="replies">
+                        {{ reply.user.username }}({{ reply.commented_time|date:"Y-m-d H:i:s" }}) 回复
+                        {{ reply.parent.user.username }}:
+                        <div id="comment_{{ reply.pk }}">
+                            {{ reply.context|safe }}&nbsp;&nbsp;&nbsp;
+                            <a href="javascript: reply({{ reply.pk }});">回复</a>
+                        </div>
+                    </div>
+                {% endfor %}
             </div>
+        {% empty %}
+            <p>暂无评论</p>
         {% endfor %}
     </div>
 {% endblock %}
@@ -70,11 +90,10 @@
     <script type="text/javascript">
         $("#comment_form").submit(function () {
             $("#comment_error").text('');
-            if(CKEDITOR.instances['id_text'].document.getBody().getText().trim()===''){
+            if (CKEDITOR.instances['id_text'].document.getBody().getText().trim() === '') {
                 $("#comment_error").text('评论对象不能为空');
                 return false;
             }
-
             CKEDITOR.instances['id_text'].updateElement()
             // 异步提交
             $.ajax({
@@ -84,12 +103,24 @@
                 cache: false,
                 success: function (data) {
                     console.log(data);
-                    if(data['status'] ==='SUCCESS'){
-                        var comment_list_html = '<div>' + data['username'] + '(' + data['comment_time'] + '):' + data['comment_context'] + '</div>';
-                        $("#comment_list").prepend(comment_list_html);
-                        CKEDITOR.instances['id_text'].setData('');
-                    }
-                    else{
+                    if (data['status'] === 'SUCCESS') {
+                        if ($("#replay_to_object_pk").val() === '0') {
+
+                            var comment_list_html = '<div class="comments" id="root_' + data['pk'] + '">' + data['username'] + '(' + data['comment_time'] + '):'
+                                + '<div id="comment_' + data['pk'] + '">' + data['comment_context'] + '<a href="javascript: reply('
+                                + data['pk'] + ');">回复</a></div></div>';
+                            $("#comment_list").prepend(comment_list_html);
+                            CKEDITOR.instances['id_text'].setData('');
+                        } else {
+                            var reply_html = '<div class="replies">' + data['username'] + '(' + data['comment_time'] + '): 回复'
+                                + data['reply_to'] + ':<div id="comment_' + data['pk'] + '">' + data['comment_context']
+                                + '<a href="javascript: reply(' + data['pk'] + ');">回复</a></div></div>';
+                            $("#root_" + data['root_pk']).append(reply_html);
+                            CKEDITOR.instances['id_text'].setData('');
+                            $('#reply_display_content').hide();
+                        }
+
+                    } else {
                         $("#comment_error").text(data['message']);
                     }
                 },
@@ -99,5 +130,13 @@
             });
             return false;
         });
+
+        function reply(obj_pk) {
+            $('#replay_to_object_pk').val(obj_pk);
+            var html = $('#comment_' + obj_pk).html();
+            $('#reply_display').html(html);
+            $('#reply_display_content').show();
+            $('html').animate({scrollTop: $('#comment_form')})
+        }
     </script>
 {% endblock %}
