@@ -8,4 +8,5 @@ register = template.Library()
 @register.simple_tag
 def get_blog_readnum_count(obj):
     ct = ContentType.objects.get_for_model(obj)
-    return ReadStatistics.objects.get(content_type=ct, object_id=obj.pk).read_num
+    readstatistics, created = ReadStatistics.objects.get_or_create(content_type=ct, object_id=obj.pk)
+    return readstatistics.read_num
