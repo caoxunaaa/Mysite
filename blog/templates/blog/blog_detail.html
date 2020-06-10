@@ -21,7 +21,7 @@
         </div>
         <div class="panel-footer">
             <button id="button_likes" type="button" class="btn btn-default btn-xs" aria-label="Left Align"
-                    onclick="click_likes()">
+                    onclick="click_likes(this, 'blog', 1)">
                 <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span>
                 <span id="like_count" >0</span>
             </button>
@@ -102,9 +102,15 @@
 
         }
 
-        function click_likes() {
-            console.log($("#like_count").className);
-            document.getElementById("button_nolikes").classList.add("active");
+        function click_likes(obj, contentType, object_id) {
+            $.ajax({
+                url: "{% url 'like_change' %}",
+                type: 'GET',
+                data: {'contenttype': contentType,
+                       'object_id': object_id
+                }
+            });
+
         }
 
         $("#comment_form").submit(function () {
