@@ -10,6 +10,7 @@ class LikesCount(models.Model):
     content_object = GenericForeignKey('content_type', 'object_id')
 
     likes_number = models.IntegerField(verbose_name='点赞数', default=0)
+    dislikes_number = models.IntegerField(verbose_name='嫌弃数', default=0)
 
 
 class LikesRecord(models.Model):
@@ -20,3 +21,4 @@ class LikesRecord(models.Model):
     likes_time = models.DateField(verbose_name='点赞时间', auto_now=True)
     likes_user = models.ForeignKey(User, verbose_name='点赞者', related_name='likes_user_reverse',
                                    on_delete=models.CASCADE)
+    is_like = models.BooleanField(default=True)

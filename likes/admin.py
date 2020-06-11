@@ -4,9 +4,9 @@ from .models import LikesCount, LikesRecord
 
 @admin.register(LikesCount)
 class LikesCountAdmin(admin.ModelAdmin):
-    list_display = ('id', 'content_object', 'likes_number')
+    list_display = ('id', 'content_object', 'likes_number', 'dislikes_number')
 
 
 @admin.register(LikesRecord)
 class LikesRecordAdmin(admin.ModelAdmin):
-    list_display = ('id', 'content_object', 'likes_time', 'likes_user')
+    list_display = ('id', 'content_object', 'likes_time', 'likes_user', 'is_like')

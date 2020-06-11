@@ -5,6 +5,8 @@
 {% endblock %}
 
 {% load static %}
+{% load likes_tags %}
+
 {% block header_extends %}
     <link rel="stylesheet" href="{% static 'blog/blog.css' %}">
     <script type="text/javascript" src="{% static "ckeditor/ckeditor-init.js" %}"></script>
@@ -21,14 +23,14 @@
         </div>
         <div class="panel-footer">
             <button id="button_likes" type="button" class="btn btn-default btn-xs" aria-label="Left Align"
-                    onclick="click_likes(this, 'blog', 1)">
+                    onclick="click_likes(this, 'blog', {{ blog.pk }})">
                 <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span>
-                <span id="like_count" >0</span>
+                <span id="like_count">{% get_likes_count blog %}</span>
             </button>
-            <button id="button_nolikes" type="button" class="btn btn-default btn-xs" aria-label="Left Align"
-                    onclick="click_nolikes()">
+            <button id="button_dislikes" type="button" class="btn btn-default btn-xs" aria-label="Left Align"
+                    onclick="click_likes(this, 'blog', {{ blog.pk }})">
                 <span class="glyphicon glyphicon-thumbs-down" aria-hidden="true"></span>
-                <span id="nolike_count">0</span>
+                <span id="dislike_count">{% get_dislikes_count blog %}</span>
             </button>
             分类: <a href="{% url 'blog_with_type' blog.blog_type.pk %}">{{ blog.blog_type }}</a>
             更新时间: {{ blog.updated_time|date:"Y-m-d H:i:s" }}&nbsp;&nbsp;
@@ -98,19 +100,24 @@
 
 {% block script_extends %}
     <script type="text/javascript">
-        function click_nolikes() {
-
-        }
-
         function click_likes(obj, contentType, object_id) {
+            {#const is_like = obj.getElementsByClassName("dislike").length !== 0;#}
+            const is_like = obj.id === 'button_likes';
+            console.log(is_like)
             $.ajax({
                 url: "{% url 'like_change' %}",
                 type: 'GET',
-                data: {'contenttype': contentType,
-                       'object_id': object_id
+                data: {
+                    'contenttype': contentType,
+                    'object_id': object_id,
+                    'is_like': is_like
+                },
+                cache: false,
+                success: function (data) {
+                    $('#like_count').text(data['like_number'])
+                    $('#dislike_count').text(data['dislike_number'])
                 }
             });
-
         }
 
         $("#comment_form").submit(function () {
