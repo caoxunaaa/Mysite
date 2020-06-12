@@ -10,7 +10,7 @@
 
 
 {% block content %}
-    <h3 class="home-content">欢迎来到个人博客网站</h3>
+    <h3 class="home-content" id="home-text">欢迎来到个人博客网站</h3>
     <div id="container" style="width: 480px;height:320px;"></div>
     <script>
         // 图表配置
@@ -68,5 +68,20 @@
 
 {% endblock %}
 
+{% block script_extends %}
+    <script type="text/javascript">
+        $('#home-text').rotate({
+            bind: {
+                click: function () {
+                    $(this).rotate({
+                        angle: 0,
+                        animateTo: 360,
+                        easing: $.easing.easeInOutExpo
+                    });
+                }
+            }
+        });
+    </script>
+{% endblock %}
 
 
