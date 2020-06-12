@@ -10,3 +10,7 @@ div.nav {
 body {
     margin-top: 70px !important;
 }
+
+input {
+    margin-bottom: 1em !important;
+}

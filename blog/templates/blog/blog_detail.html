@@ -6,6 +6,7 @@
 
 {% load static %}
 {% load likes_tags %}
+{% load comment_tags %}
 
 {% block header_extends %}
     <link rel="stylesheet" href="{% static 'blog/blog.css' %}">
@@ -58,6 +59,7 @@
             </div>
             <form id="comment_form" action="{% url 'update_comment' %}" method="POST">
                 {% csrf_token %}
+                {% get_comment_form blog as comment_form %}
                 {% for field in comment_form %}
                     {{ field }}
                 {% endfor %}
@@ -74,6 +76,7 @@
     </div>
     <hr>
     <div id="comment_list" class="comment-list">
+        {% get_comment_list blog as comments %}
         {% for comment in comments %}
             <div class="comments" id="root_{{ comment.pk }}">
                 {{ comment.user.username }}({{ comment.commented_time|date:"Y-m-d H:i:s" }}):
@@ -114,8 +117,12 @@
                 },
                 cache: false,
                 success: function (data) {
-                    $('#like_count').text(data['like_number'])
-                    $('#dislike_count').text(data['dislike_number'])
+                    if (data['status'] === 'SUCCESS') {
+                        $('#like_count').text(data['like_number']);
+                        $('#dislike_count').text(data['dislike_number']);
+                    } else {
+                        $('#login_modal').modal('show');
+                    }
                 }
             });
         }

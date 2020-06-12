@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %}个人资料{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2 col-sm-6 col-sm-offset-2 ">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">个人资料</h3>
+                    </div>
+                    <div class="panel-body">
+                        <p>昵称: <a href="">编辑昵称</a></p>
+                        <p>邮箱: {% if user.email %}{{ user.email }} {% else %} <a href="">绑定邮箱</a> {% endif %}</p>
+                        <p>上一次登录时间：{{ user.last_login|date:"Y-m-d H:i:s" }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
