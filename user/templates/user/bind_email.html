@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}编辑昵称{% endblock %}
+{% block title %}绑定邮箱{% endblock %}
 
 {% block content %}
     <div class="container">
@@ -8,7 +8,7 @@
             <div class="col-md-4 col-md-offset-4 col-sm-4 col-sm-offset-4 ">
                 <div class="panel panel-primary">
                     <div class="panel-heading">
-                        <h3 class="panel-title">编辑昵称</h3>
+                        <h3 class="panel-title">绑定邮箱</h3>
                     </div>
                     <div class="panel-body">
                         <form action="" method="post">
@@ -22,8 +22,11 @@
                             {% endfor %}
                             <span id="tip" class="text-danger">{{ form.non_field_errors }}</span>
                             <div class="clearfix"></div>
+                            <div class="pull-left">
+                                <button class="btn btn-primary" onclick="send_verification_code()">发送验证码</button>
+                            </div>
                             <div class="pull-right">
-                                <input type="submit" class="btn btn-primary" value="修改" style="">
+                                <input type="submit" class="btn btn-primary" value="绑定">
                                 <button class="btn btn-default" onclick="window.location.href='{% url 'user_info' %}'">
                                     返回
                                 </button>
@@ -35,4 +38,29 @@
             </div>
         </div>
     </div>
+{% endblock %}
+
+{% block script_extends %}
+    <script type="text/javascript">
+        function send_verification_code() {
+            const email = $('#email').val();
+            if(email===''){
+                $('#tip').text('邮箱不能为空');
+                return false;
+            }
+            $.ajax({
+                url: {% url 'send_verification_code' %},
+                type: 'GET',
+                data:{
+                    'email': email
+                },
+                cache:false,
+                success: function (data) {
+                    if(data['status']==='ERROR'){
+                        alert(data['status'])
+                    }
+                }
+            });
+        }
+    </script>
 {% endblock %}

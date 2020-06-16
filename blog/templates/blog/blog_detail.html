@@ -51,7 +51,7 @@
     </div>
     <div class="comment-area">
         {% if user.is_authenticated %}
-            <div>{{ user.username }}已登录，请评论.</div>
+            <div>{{ user.get_nickname_or_username }}已登录，请评论.</div>
             <div id="reply_display_content" style="display: none">
                 <p>回复：</p>
                 <div id="reply_display">
@@ -79,15 +79,15 @@
         {% get_comment_list blog as comments %}
         {% for comment in comments %}
             <div class="comments" id="root_{{ comment.pk }}">
-                {{ comment.user.username }}({{ comment.commented_time|date:"Y-m-d H:i:s" }}):
+                {{ comment.user.get_nickname_or_username }}({{ comment.commented_time|date:"Y-m-d H:i:s" }}):
                 <div id="comment_{{ comment.pk }}">
                     {{ comment.context|safe }}&nbsp;&nbsp;&nbsp;
                     <a href="javascript: reply({{ comment.pk }});">回复</a>
                 </div>
                 {% for reply in comment.root_comment_reverse.all %}
                     <div class="replies">
-                        {{ reply.user.username }}({{ reply.commented_time|date:"Y-m-d H:i:s" }}) 回复
-                        {{ reply.parent.user.username }}:
+                        {{ reply.user.get_nickname_or_username }}({{ reply.commented_time|date:"Y-m-d H:i:s" }}) 回复
+                        {{ reply.parent.user.get_nickname_or_username }}:
                         <div id="comment_{{ reply.pk }}">
                             {{ reply.context|safe }}&nbsp;&nbsp;&nbsp;
                             <a href="javascript: reply({{ reply.pk }});">回复</a>

@@ -141,3 +141,20 @@ CKEDITOR_CONFIGS = {
 
 # 自定义参数
 EACH_PAGE_BLOGS_NUMBER = 4
+
+# 缓存设置
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+        'LOCATION': 'my_cache_table',
+    }
+}
+
+# 邮件设置
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'localhost'
+EMAIL_PORT = 25
+EMAIL_HOST_USER = '451501060@qq.com'
+EMAIL_HOST_PASSWORD = 'oxzniaphxnntbhfe'
+EMAIL_SUBJECT_PREFIX = '[Django] '
+EMAIL_USE_TLS = True
