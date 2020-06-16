@@ -12,7 +12,7 @@
                     </div>
                     <div class="panel-body">
                         <div class="blog-content">
-                            <form action="#" method="POST">
+                            <form action="" method="POST">
                                 {% csrf_token %}
                                 {% for field in login_form %}
                                     <label for="{{ field.id_for_label }}">{{ field.label }}</label>
