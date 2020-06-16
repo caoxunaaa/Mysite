@@ -28,7 +28,8 @@ class RegisterForm(forms.Form):
     password = forms.CharField(label='密码', min_length=8,
                                widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': '请输入密码'}))
     password_again = forms.CharField(label='重复密码', min_length=8,
-                                     widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': '请再次输入密码'}))
+                                     widget=forms.PasswordInput(
+                                         attrs={'class': 'form-control', 'placeholder': '请再次输入密码'}))
 
     def clean_username(self):
         username = self.cleaned_data['username']
@@ -51,3 +52,26 @@ class RegisterForm(forms.Form):
             raise forms.ValidationError('两次密码输入不一致')
         else:
             return password_again
+
+
+class EditNicknameForm(forms.Form):
+    new_nickname = forms.CharField(label='新昵称', max_length=30,
+                                   widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': '请输入新昵称'}))
+
+    def __init__(self, *args, **kwargs):
+        if 'user' in kwargs:
+            self.user = kwargs.pop('user')
+        super(EditNicknameForm, self).__init__(*args, **kwargs)
+
+    def clean(self):
+        if self.user.is_authenticated:
+            self.cleaned_data['user'] = self.user
+        else:
+            raise forms.ValidationError('未知用户')
+        return self.cleaned_data
+
+    def clean_new_nickname(self):
+        new_nickname = self.cleaned_data['new_nickname']
+        if new_nickname is '':
+            raise forms.ValidationError('评论内容不能为空')
+        return new_nickname

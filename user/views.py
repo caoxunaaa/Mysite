@@ -1,8 +1,9 @@
 from django.shortcuts import render, redirect
 from django.contrib import auth
-from .forms import LoginForm, RegisterForm
+from .forms import LoginForm, RegisterForm, EditNicknameForm
 from django.urls import reverse
 from django.contrib.auth.models import User
+from .models import Profile
 from django.http import JsonResponse
 
 
@@ -59,3 +60,22 @@ def logout(request):
 
 def user_info(request):
     return render(request, 'user/user_info.html')
+
+
+def edit_nickname(request):
+    redirect_to = request.GET.get('from', reverse('home'))
+    if request.method == 'POST':
+        edit_nickname_form = EditNicknameForm(request.POST, user=request.user)
+        if edit_nickname_form.is_valid():
+            user = edit_nickname_form.cleaned_data['user']
+            new_nickname = edit_nickname_form.cleaned_data['new_nickname']
+            profile, created = Profile.objects.get_or_create(user=user)
+            profile.nickname = new_nickname
+            profile.save()
+            return redirect(redirect_to)
+    else:
+        edit_nickname_form = EditNicknameForm()
+
+    context = dict()
+    context['form'] = edit_nickname_form
+    return render(request, 'user/edit_nickname.html', context)
