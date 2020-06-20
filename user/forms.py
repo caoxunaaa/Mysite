@@ -121,4 +121,6 @@ class BindEmailForm(forms.Form):
 
 
 class ChangePasswordForm(forms.Form):
-    pass
+    email = forms.EmailField(label='邮箱',
+                             widget=forms.EmailInput(
+                                 attrs={'class': 'form-control', 'placeholder': '请输入邮箱'}))
