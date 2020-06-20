@@ -118,3 +118,7 @@ class BindEmailForm(forms.Form):
         if verification_code == '':
             raise forms.ValidationError('验证码不能为空')
         return verification_code
+
+
+class ChangePasswordForm(forms.Form):
+    pass
