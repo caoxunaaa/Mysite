@@ -124,3 +124,9 @@ class ChangePasswordForm(forms.Form):
     email = forms.EmailField(label='邮箱',
                              widget=forms.EmailInput(
                                  attrs={'class': 'form-control', 'placeholder': '请输入邮箱'}))
+    password = forms.CharField(label='密码', min_length=8,
+                               widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': '请输入密码'}))
+    password_again = forms.CharField(label='重复密码', min_length=8,
+                                     widget=forms.PasswordInput(
+                                         attrs={'class': 'form-control', 'placeholder': '请再次输入密码'}))
+
