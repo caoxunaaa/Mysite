@@ -87,8 +87,10 @@ def edit_nickname(request):
         edit_nickname_form = EditNicknameForm()
 
     context = dict()
+    context['title'] = '编辑昵称'
+    context['submit_name'] = '修改'
     context['form'] = edit_nickname_form
-    return render(request, 'user/edit_nickname.html', context)
+    return render(request, 'form.html', context)
 
 
 def bind_email(request):
@@ -105,6 +107,8 @@ def bind_email(request):
         bind_email_form = BindEmailForm()
 
     context = dict()
+    context['title'] = '绑定邮箱'
+    context['submit_name'] = '绑定'
     context['form'] = bind_email_form
     return render(request, 'user/bind_email.html', context)
 
