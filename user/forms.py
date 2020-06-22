@@ -121,12 +121,28 @@ class BindEmailForm(forms.Form):
 
 
 class ChangePasswordForm(forms.Form):
-    email = forms.EmailField(label='邮箱',
-                             widget=forms.EmailInput(
-                                 attrs={'class': 'form-control', 'placeholder': '请输入邮箱'}))
-    password = forms.CharField(label='密码', min_length=8,
-                               widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': '请输入密码'}))
-    password_again = forms.CharField(label='重复密码', min_length=8,
-                                     widget=forms.PasswordInput(
-                                         attrs={'class': 'form-control', 'placeholder': '请再次输入密码'}))
+    old_password = forms.CharField(label='旧密码', min_length=6,
+                                   widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': '请输入旧密码'}))
+    new_password = forms.CharField(label='新密码', min_length=6,
+                                   widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': '请输入新密码'}))
+    new_password_again = forms.CharField(label='重复新密码', min_length=6,
+                                         widget=forms.PasswordInput(
+                                             attrs={'class': 'form-control', 'placeholder': '请再次输入新密码'}))
 
+    def __init__(self, *args, **kwargs):
+        if 'user' in kwargs:
+            self.user = kwargs.pop('user')
+        super(ChangePasswordForm, self).__init__(*args, **kwargs)
+
+    def clean(self):
+        new_password = self.cleaned_data.get('new_password', '')
+        new_password_again = self.cleaned_data.get('new_password_again', '')
+        if new_password != new_password_again:
+            raise forms.ValidationError('两次密码输入不一致')
+        return self.cleaned_data
+
+    def clean_old_password(self):
+        old_password = self.cleaned_data.get('old_password', '')
+        if not self.user.check_password(old_password):
+            raise forms.ValidationError('原密码不正确')
+        return old_password

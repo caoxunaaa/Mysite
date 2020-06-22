@@ -14,6 +14,7 @@
                         <p>昵称: {{ user.get_nickname }} <a href="{% url 'edit_nickname' %}?from={{ request.get_full_path }}">编辑昵称</a></p>
                         <p>邮箱: {% if user.email %}{{ user.email }} {% else %} <a href="{% url 'bind_email' %}?from={{ request.get_full_path }}">绑定邮箱</a> {% endif %}</p>
                         <p>上一次登录时间：{{ user.last_login|date:"Y-m-d H:i:s" }}</p>
+                        <p><a href="{% url 'change_password' %}">修改密码</a></p>
                     </div>
                 </div>
             </div>

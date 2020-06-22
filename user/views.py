@@ -3,7 +3,7 @@ import time
 import string
 from django.shortcuts import render, redirect
 from django.contrib import auth
-from .forms import LoginForm, RegisterForm, EditNicknameForm, BindEmailForm
+from .forms import LoginForm, RegisterForm, EditNicknameForm, BindEmailForm, ChangePasswordForm
 from django.urls import reverse
 from django.contrib.auth.models import User
 from .models import Profile
@@ -75,21 +75,22 @@ def edit_nickname(request):
     redirect_to = request.GET.get('from', reverse('home'))
 
     if request.method == 'POST':
-        edit_nickname_form = EditNicknameForm(request.POST, user=request.user)
-        if edit_nickname_form.is_valid():
-            user = edit_nickname_form.cleaned_data['user']
-            new_nickname = edit_nickname_form.cleaned_data['new_nickname']
+        form = EditNicknameForm(request.POST, user=request.user)
+        if form.is_valid():
+            user = form.cleaned_data['user']
+            new_nickname = form.cleaned_data['new_nickname']
             profile, created = Profile.objects.get_or_create(user=user)
             profile.nickname = new_nickname
             profile.save()
             return redirect(redirect_to)
     else:
-        edit_nickname_form = EditNicknameForm()
+        form = EditNicknameForm()
 
     context = dict()
     context['title'] = '编辑昵称'
     context['submit_name'] = '修改'
-    context['form'] = edit_nickname_form
+    context['form'] = form
+    context['return_back_url'] = redirect_to
     return render(request, 'form.html', context)
 
 
@@ -97,19 +98,20 @@ def bind_email(request):
     redirect_to = request.GET.get('from', reverse('home'))
 
     if request.method == 'POST':
-        bind_email_form = BindEmailForm(request.POST, request=request)
-        if bind_email_form.is_valid():
-            email = bind_email_form.cleaned_data['email']
+        form = BindEmailForm(request.POST, request=request)
+        if form.is_valid():
+            email = form.cleaned_data['email']
             request.user.email = email
             request.user.save()
             return redirect(redirect_to)
     else:
-        bind_email_form = BindEmailForm()
+        form = BindEmailForm()
 
     context = dict()
     context['title'] = '绑定邮箱'
     context['submit_name'] = '绑定'
-    context['form'] = bind_email_form
+    context['form'] = form
+    context['return_back_url'] = redirect_to
     return render(request, 'user/bind_email.html', context)
 
 
@@ -138,3 +140,25 @@ def send_verification_code(request):
     else:
         data['status'] = 'ERROR'
     return JsonResponse(data)
+
+
+def change_password(request):
+    redirect_to = request.GET.get('from', reverse('home'))
+
+    if request.method == 'POST':
+        form = ChangePasswordForm(request.POST, user=request.user)
+        if form.is_valid():
+            user = request.user
+            user.set_password(form.cleaned_data['new_password'])
+            user.save()
+            auth.logout(request)
+            return redirect(redirect_to)
+    else:
+        form = ChangePasswordForm()
+
+    context = dict()
+    context['title'] = '修改密码'
+    context['submit_name'] = '修改'
+    context['form'] = form
+    context['return_back_url'] = redirect_to
+    return render(request, 'form.html', context)
