@@ -3,7 +3,7 @@ import time
 import string
 from django.shortcuts import render, redirect
 from django.contrib import auth
-from .forms import LoginForm, RegisterForm, EditNicknameForm, BindEmailForm, ChangePasswordForm
+from .forms import LoginForm, RegisterForm, EditNicknameForm, BindEmailForm, ChangePasswordForm, ForgetPasswordForm
 from django.urls import reverse
 from django.contrib.auth.models import User
 from .models import Profile
@@ -103,6 +103,7 @@ def bind_email(request):
             email = form.cleaned_data['email']
             request.user.email = email
             request.user.save()
+            del request.session['bind_email']
             return redirect(redirect_to)
     else:
         form = BindEmailForm()
@@ -117,6 +118,7 @@ def bind_email(request):
 
 def send_verification_code(request):
     email = request.GET.get('email', '')
+    send_for = request.GET.get('send_for', '')
     data = dict()
     if email != '':
         code = ''.join(random.sample(string.ascii_letters + string.digits, 4))
@@ -127,7 +129,7 @@ def send_verification_code(request):
             print('30秒内不能刷新验证码')
             data['status'] = 'ERROR'
         else:
-            request.session['bind_email_code'] = code
+            request.session[send_for] = code
             request.session['send_code_time'] = now
 
             send_mail('绑定邮箱',
@@ -143,7 +145,7 @@ def send_verification_code(request):
 
 
 def change_password(request):
-    redirect_to = request.GET.get('from', reverse('home'))
+    redirect_to = reverse('home')
 
     if request.method == 'POST':
         form = ChangePasswordForm(request.POST, user=request.user)
@@ -162,3 +164,26 @@ def change_password(request):
     context['form'] = form
     context['return_back_url'] = redirect_to
     return render(request, 'form.html', context)
+
+
+def forget_password(request):
+    redirect_to = reverse('login')
+    if request.method == 'POST':
+        form = ForgetPasswordForm(request.POST, request=request)
+        if form.is_valid():
+            email = form.cleaned_data['email']
+            new_password = form.cleaned_data['new_password']
+            user = User.objects.get(email=email)
+            user.set_password(new_password)
+            user.save()
+            del request.session['forget_password']
+            return redirect(redirect_to)
+    else:
+        form = ForgetPasswordForm()
+
+    context = dict()
+    context['title'] = '重置密码'
+    context['submit_name'] = '重置密码'
+    context['form'] = form
+    context['return_back_url'] = redirect_to
+    return render(request, 'user/forget_password.html', context)

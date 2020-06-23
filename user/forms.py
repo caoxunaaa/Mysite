@@ -100,7 +100,7 @@ class BindEmailForm(forms.Form):
         if self.request.user.email != '':
             raise forms.ValidationError('已经绑定过邮箱')
 
-        code = self.request.session.get('bind_email_code', '')
+        code = self.request.session.get('bind_email', '')
         verification_code = self.cleaned_data.get('verification_code', '')
         if not (code != '' and code == verification_code):
             raise forms.ValidationError('验证码不正确')
@@ -146,3 +146,31 @@ class ChangePasswordForm(forms.Form):
         if not self.user.check_password(old_password):
             raise forms.ValidationError('原密码不正确')
         return old_password
+
+
+class ForgetPasswordForm(forms.Form):
+    email = forms.EmailField(label='邮箱',
+                             widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': '请输入绑定邮箱'}))
+    verification_code = forms.CharField(label='验证码', required=False,
+                                        widget=forms.TextInput(
+                                            attrs={'class': 'form-control', 'placeholder': '请输入验证码'}))
+    new_password = forms.CharField(label='重复新密码', min_length=6,
+                                         widget=forms.PasswordInput(
+                                             attrs={'class': 'form-control', 'placeholder': '请再次输入新密码'}))
+
+    def __init__(self, *args, **kwargs):
+        if 'request' in kwargs:
+            self.request = kwargs.pop('request')
+        super(ForgetPasswordForm, self).__init__(*args, **kwargs)
+
+    def clean_verification_code(self):
+        verification_code = self.cleaned_data.get('verification_code', '').strip()
+        if verification_code != self.request.session['forget_password'] and verification_code != '':
+            raise forms.ValidationError('验证码不正确')
+        return verification_code
+
+    def clean_email(self):
+        email = self.cleaned_data['email'].strip()
+        if not User.objects.filter(email=email).exists():
+            raise forms.ValidationError('邮箱不存在')
+        return email
