@@ -132,6 +132,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # ckeditor
 CKEDITOR_UPLOAD_PATH = 'upload/'
 CKEDITOR_CONFIGS = {
+    'default': {},
     'comment_ckeditor': {
         'width': 'auto',
         'tabSpaces': 4,

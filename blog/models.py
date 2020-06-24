@@ -4,6 +4,7 @@ from ckeditor_uploader.fields import RichTextUploadingField
 from read_statistics.utils import ReadNumDisplay
 from read_statistics.models import ReadStatisticsDetail
 from django.contrib.contenttypes.fields import GenericRelation
+from django.urls import reverse
 
 
 class BlogType(models.Model):
@@ -28,3 +29,6 @@ class Blog(models.Model, ReadNumDisplay):
 
     class Meta:
         ordering = ['pk']
+
+    def get_url(self):
+        return reverse('blog_detail', kwargs={'blog_pk': self.pk})
