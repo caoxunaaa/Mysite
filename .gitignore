@@ -1,5 +1,5 @@
 /venv/
-/.idea/encodings.xml
 db.sqlite3
 __pycache__/
 /mysite/settings.py
+/.idea/
