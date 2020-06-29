@@ -3,3 +3,4 @@ db.sqlite3
 __pycache__/
 /mysite/settings.py
 /.idea/
+/data.json
