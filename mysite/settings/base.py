@@ -13,21 +13,9 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '9#u-=my=)=7ycj3nlrh%__dd)4z3^@)!x=uj_9_^@xw(^eajbk'
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = []
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -85,7 +73,7 @@ DATABASES = {
     }
 }
 '''
-
+'''
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
@@ -96,7 +84,7 @@ DATABASES = {
         'PORT': '3306',
     }
 }
-
+'''
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
 
@@ -134,7 +122,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
-    os.path.join(BASE_DIR, 'blog/static'),
+    os.path.join(BASE_DIR, 'blog/blog/static'),
 ]
 
 # media
@@ -160,12 +148,3 @@ CACHES = {
         'LOCATION': 'my_cache_table',
     }
 }
-
-# 邮件设置
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.qq.com'
-EMAIL_PORT = 25
-EMAIL_HOST_USER = '451501060@qq.com'
-EMAIL_HOST_PASSWORD = 'oxzniaphxnntbhfe'
-EMAIL_SUBJECT_PREFIX = '[Django] '
-EMAIL_USE_TLS = True

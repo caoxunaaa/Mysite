@@ -1,13 +1,13 @@
 from django.shortcuts import render, get_object_or_404
 from .models import Blog, BlogType
 from django.core.paginator import Paginator
-from mysite import settings
+from mysite.settings import development
 from django.db.models import Count
 from read_statistics.utils import read_once_statistics
 
 
 def get_common_data(request, obj_list):
-    paginator = Paginator(obj_list, settings.EACH_PAGE_BLOGS_NUMBER)
+    paginator = Paginator(obj_list, development.EACH_PAGE_BLOGS_NUMBER)
     page = request.GET.get('page', 1)  # 获取请求的页码数
     page_of_blog = paginator.get_page(page)
 
