@@ -14,8 +14,7 @@ import os
 from .base import *
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ['SECRET_KEY']
-
+SECRET_KEY = '9#u-=my=)=7ycj3nlrh%__dd)4z3^@)!x=uj_9_^@xw(^eajbk'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -39,7 +38,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'mysite_db',
         'USER': 'caoxun',
-        'PASSWORD': os.environ['DATABASE_PASSWORD'],
+        'PASSWORD': 'caoxun8500139',
         'HOST': 'localhost',
         'PORT': '3306',
     }
@@ -50,6 +49,6 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.qq.com'
 EMAIL_PORT = 25
 EMAIL_HOST_USER = '451501060@qq.com'
-EMAIL_HOST_PASSWORD = os.environ['EMAIL_HOST_PASSWORD']
+EMAIL_HOST_PASSWORD = 'oxzniaphxnntbhfe'
 EMAIL_SUBJECT_PREFIX = '[Django] '
-EMAIL_USE_TLS = True
+EMAIL_USE_TSL = True
